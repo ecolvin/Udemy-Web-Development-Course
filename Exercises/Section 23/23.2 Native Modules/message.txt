@@ -1,2 +1,2 @@
-Hello from NodeJS!
-Hello from Angela!
+This is a message to be outputed in the console.
+This is another line to be read and outputed in the console.
