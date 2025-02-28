@@ -1,15 +1,15 @@
 {
-  "name": "3.3-postman",
+  "name": "24.1-express-server",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Eric Colvin",
   "license": "ISC",
+  "description": "",
   "dependencies": {
     "express": "^4.21.2"
   }

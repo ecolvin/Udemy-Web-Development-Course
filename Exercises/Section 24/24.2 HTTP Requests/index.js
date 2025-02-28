@@ -7,11 +7,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/about", (req, res) => {
-  res.send("<h1>About Me</h1><p>My name is Angela</p>");
+  res.send("<h1>About Me</h1><p>My name is Eric</p>");
 });
 
 app.get("/contact", (req, res) => {
-  res.send("<h1>Contact Me</h1><p>Phone: +44123456789</p>");
+  res.send("<h1>Contact Me</h1> <p>Phone: 867-5309</p> <p>Email: mail@gmail.com</p>");
 });
 
 app.listen(port, () => {
