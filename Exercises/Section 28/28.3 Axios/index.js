@@ -13,8 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   JSON data from response.data and edit the index.ejs file accordingly.
 app.get("/", async (req, res) => {
   try {
-    const response = await axios.get("https://bored-api.appbrewery.com/random");
+    const response = await axios.get("https://apis.scrimba.com/bored/api/activity");
     const result = response.data;
+    console.log(result);
     res.render("index.ejs", { data: result });
   } catch (error) {
     console.error("Failed to make request:", error.message);
@@ -26,6 +27,39 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
   console.log(req.body);
+  const type = req.body.type;
+  const participants = req.body.participants;
+
+  let queries = "?";
+  if(type !== "")
+  {
+    queries += "type=" + type + "&";
+  }
+  if(participants !== "")
+  {
+    queries += "participants=" + participants;
+  }
+  console.log(queries);
+
+  try
+  {
+    const response = await axios.get("https://apis.scrimba.com/bored/api/activity" + queries);
+    const result = response.data;
+    console.log(result);
+    if(result.error)
+    {
+      res.render("index.ejs", {error: result.error});
+    }
+    else
+    {
+      res.render("index.ejs", { data: result });
+    }
+  } catch (error) {    
+    console.error("Failed to make request:", error.message);
+    res.render("index.ejs", {
+      error: error.message,
+    });
+  }
 
   // Step 2: Play around with the drop downs and see what gets logged.
   // Use axios to make an API request to the /filter endpoint. Making
