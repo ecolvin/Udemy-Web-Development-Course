@@ -42,13 +42,91 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //CHALLENGE 1: GET All posts
 
+app.get("/posts", async (req, res) => {
+  res.json(posts);
+});
+
 //CHALLENGE 2: GET a specific post by id
+
+app.get("/posts/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const post = posts.find(post => post.id === id)
+  if(post)
+  {
+    res.json(post);
+  }
+  else
+  {
+    res.status(404).json({
+      error: `Post with id: ${id} not found.`
+    })
+  }
+});
 
 //CHALLENGE 3: POST a new post
 
+app.post("/posts", async (req, res) => {
+  let id = 1;
+  if(posts.length > 0)
+  {
+    id = posts.at(-1).id + 1;
+  }
+  const newPost = {
+    id: id,
+    title: req.body.title,
+    content: req.body.content,
+    author: req.body.author,
+    date: new Date().toISOString()
+  };
+  posts.push(newPost);
+  res.status(201).json(newPost);
+});
+
 //CHALLENGE 4: PATCH a post when you just want to update one parameter
 
+app.patch("/posts/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const existingPost = posts.find(post => post.id === id);    
+  const idx = posts.findIndex(post => post.id === id)
+  if(existingPost && idx > -1)
+  {
+    const newPost = {
+      id: id,
+      title: req.body.title || existingPost.title,
+      content: req.body.content || existingPost.content,
+      author: req.body.author || existingPost.author,
+      date: new Date().toISOString()
+    };
+    posts[idx] = newPost;
+    res.json(newPost);
+  }
+  else
+  {
+    res.status(404).json({
+      error: `Post with id: ${id} not found. Post could not be updated.`
+    });
+  }
+});
+
 //CHALLENGE 5: DELETE a specific post by providing the post id.
+
+app.delete("/posts/:id", async (req, res) => {  
+  const id = parseInt(req.params.id);
+  const idx = posts.findIndex(post => post.id === id)
+  if(idx > -1)
+  {
+    posts.splice(idx, 1);
+    res.status(200).json({ 
+      message: "Post deleted successfully." 
+    });
+  }
+  else
+  {
+    res.status(404).json({
+      error: `Joke with id: ${id} not found. Post could not be deleted.`
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);
