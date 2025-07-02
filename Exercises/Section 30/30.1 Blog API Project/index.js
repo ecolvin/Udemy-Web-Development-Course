@@ -123,7 +123,7 @@ app.delete("/posts/:id", async (req, res) => {
   else
   {
     res.status(404).json({
-      error: `Joke with id: ${id} not found. Post could not be deleted.`
+      error: `Post with id: ${id} not found. Post could not be deleted.`
     });
   }
 });
