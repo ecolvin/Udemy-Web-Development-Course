@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flag Quiz</title>
+  <title>Capital City Quiz</title>
   <link rel="stylesheet" href="/styles/main.css">
 </head>
 
@@ -20,11 +20,11 @@
 
     </div>
 
-    <h1 id="countryFlag">
-      <%=question.flag %>
+    <h1 id="countryName">
+      <%=question.country %>
     </h1>
     <div class="answer-container">
-      <input type="text" name="answer" id="userInput" placeholder="Name the country" autofocus autocomplete="off">
+      <input type="text" name="answer" id="userInput" placeholder="Enter the capital" autofocus autocomplete="off">
 
     </div>
     <button type="submit">SUBMIT<% if(locals.wasCorrect){ %>
