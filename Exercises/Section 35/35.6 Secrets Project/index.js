@@ -35,6 +35,40 @@ const db = new pg.Client({
 });
 db.connect();
 
+const default_secret = "No secret found. Please input a secret.";
+
+async function getUserSecret(email)
+{
+  try
+  {
+    const result = await db.query(
+      "SELECT secret FROM users WHERE email = $1",
+      [email]
+    );
+
+    if(result.rowCount > 0)
+    {
+      const secret = result.rows[0].secret;
+
+      if(secret === "" || !secret)
+      {
+        return default_secret;
+      }
+
+      return secret;
+    }
+    else
+    {
+      return default_secret;
+    }
+  }
+  catch (err)
+  {
+    console.error(err);
+    return default_secret;
+  }
+}
+
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
@@ -56,18 +90,30 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", (req, res) => {
+app.get("/secrets", async (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("secrets.ejs");
+    const secret = await getUserSecret(req.user.email); 
 
-    //TODO: Update this to pull in the user secret to render in secrets.ejs
-  } else {
+    console.log(secret);
+
+    res.render("secrets.ejs", {secret: secret});
+  }
+  else 
+  {
     res.redirect("/login");
   }
 });
 
-//TODO: Add a get route for the submit button
-//Think about how the logic should work with authentication.
+app.get("/submit", (req, res) => {
+  if(req.isAuthenticated())
+  {
+    res.render("submit.ejs");
+  }
+  else
+  {
+    res.redirect("/login");
+  }
+});
 
 app.get(
   "/auth/google",
@@ -125,8 +171,31 @@ app.post("/register", async (req, res) => {
   }
 });
 
-//TODO: Create the post route for submit.
-//Handle the submitted data and add it to the database
+app.post("/submit", async (req, res) => {
+  if(req.isAuthenticated)
+  {
+    const secret = req.body.secret;
+    const email = req.user.email;
+
+    try
+    {
+      await db.query(
+        "UPDATE users SET secret = $1 WHERE email = $2;",
+        [secret, email]
+      );
+    }
+    catch (err)
+    {
+      console.error(err);
+    }
+
+    res.redirect("/secrets");
+  }
+  else
+  {
+    res.redirect("/login");
+  }
+});
 
 passport.use(
   "local",
